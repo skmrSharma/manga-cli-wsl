@@ -51,7 +51,7 @@ show_help() {
 	A Bash script for reading mangas via the terminal
 
 	Usage:
-	  $0 [Option] [Manga Name]
+	  manga-cli [Option] [Manga Name]
 
 	Options:
 	  -h, --help		Print this help page

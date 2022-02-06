@@ -19,7 +19,7 @@ A Bash script for reading mangas via the terminal by scraping [Mangakakalot](htt
 A Bash script for reading mangas via the terminal
 
 Usage:
-	./manga-cli [Option] [Manga Name]
+	manga-cli [Option] [Manga Name]
 
 Options:
 	-h, --help		Print this help page
