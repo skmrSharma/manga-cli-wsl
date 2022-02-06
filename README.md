@@ -2,7 +2,7 @@ https://user-images.githubusercontent.com/81305164/152664895-8c1ad584-eea9-4cb2-
 
 # manga-cli
 
-A Bash script for reading mangas via the terminal by scraping [Mangakakalot](https://mangakakalot.com/).
+Bash script for reading mangas via the terminal by scraping [Mangakakalot](https://mangakakalot.com/).
 
 ## Table of Contents
 
@@ -16,7 +16,7 @@ A Bash script for reading mangas via the terminal by scraping [Mangakakalot](htt
 ## Usage
 
 ```text
-A Bash script for reading mangas via the terminal
+Bash script for reading mangas via the terminal
 
 Usage:
 	manga-cli [Option] [Manga Name]
@@ -54,4 +54,3 @@ sudo cp manga-cli /usr/local/bin/manga-cli
 - patch
 - convert
 - zathura
-

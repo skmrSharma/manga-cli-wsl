@@ -48,7 +48,7 @@ show_help() {
 	
 	manga-cli ${version} ( github.com/7USTIN/manga-cli )
 
-	A Bash script for reading mangas via the terminal
+	Bash script for reading mangas via the terminal
 
 	Usage:
 	  manga-cli [Option] [Manga Name]
