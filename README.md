@@ -2,7 +2,7 @@ https://user-images.githubusercontent.com/81305164/152664895-8c1ad584-eea9-4cb2-
 
 # manga-cli
 
-Bash script for reading mangas via the terminal by scraping [Mangakakalot](https://mangakakalot.com/).
+Bash script for reading mangas via the terminal by scraping [Mangakakalot](https://mangakakalot.com/)
 
 ## Table of Contents
 
@@ -32,9 +32,23 @@ Options:
 
 ## Install
 
-Install dependencies [(See below)](#Dependencies)
+### Arch Linux
+
+Use the AUR helper of your choice or install [manga-cli-git](https://aur.archlinux.org/packages/manga-cli-git) manually
+
+Use the following commands when using yay or paru:
+
+```sh
+yay -S manga-cli-git
+```
+
+```sh
+paru -S manga-cli-git
+```
 
 ### Linux
+
+Install dependencies [(See below)](#Dependencies)
 
 ```sh
 git clone https://github.com/7USTIN/manga-cli && cd manga-cli
@@ -54,3 +68,4 @@ sudo cp manga-cli /usr/local/bin/manga-cli
 - patch
 - convert
 - zathura
+- zathura-pdf-mupdf
