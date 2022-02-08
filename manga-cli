@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="1.0.2"
+version="1.0.3"
 old_ifs="${IFS}"
 cache_dir="${HOME}/.cache/manga-cli"
 dependencies=("ls" "cat" "curl" "sed" "awk" "tr" "du" "rm" "mkdir" "git" "diff" "patch" "img2pdf" "zathura")
@@ -124,7 +124,7 @@ clear_cache() {
 
 cache_session() {
 	printf '%s\n' \
-		"${mod_manga_title}" "${selected_chapter_num}" "${chapter_urls[*]}" > \
+		"${mod_manga_title}" "${selected_chapter_num}" "${manga_url}" "${chapter_urls[*]}" > \
 		"${cache_dir}/session"
 }
 
@@ -137,14 +137,18 @@ open_last_session() {
 		mod_manga_title="${session[0]}"
 		unset "session[0]"
 
-		selected_chapter_num=${session[1]}
+		selected_chapter_num="${session[1]}"
 		unset "session[1]"
+
+		manga_url="${session[2]}"
+		unset "session[2]"
 
 		manga_title="$(printf "%s" "${mod_manga_title}" | tr "_" " ")"
 		chapter_urls=("${session[@]}")
 		chapter_count=${#chapter_urls[@]}
 		chapter_url="${chapter_urls[${selected_chapter_num} - 1]}"
 
+		scrape_chapter_list &
 		open_chapter
 		input_controls
 	fi
@@ -173,6 +177,8 @@ select_manga() {
 }
 
 select_chapter() {
+	printf "\e[1A\e[\\"
+
 	if [[ ${chapter_count} -gt 1 ]]; then
 		prompt "Select chapter" "[1-${chapter_count}]: "
 		selected_chapter_num=${reply}
@@ -253,9 +259,8 @@ scrape_chapter_list() {
 
 	chapter_count="${#chapter_urls[@]}"
 
-	printf "\e[1A\e[\\"
-
-	if [ "${chapter_count}" == "0" ]; then
+	if [[ "${chapter_count}" == "0" ]]; then
+		printf "\e[1A\e[\\"
 		print_red "No chapters found. Exiting..."
 		exit 1
 	fi
