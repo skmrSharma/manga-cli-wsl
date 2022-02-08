@@ -2,14 +2,14 @@ https://user-images.githubusercontent.com/81305164/152664895-8c1ad584-eea9-4cb2-
 
 # manga-cli
 
-Bash script for reading mangas via the terminal by scraping [Mangakakalot](https://mangakakalot.com/)
+Bash script for reading mangas via the terminal by scraping [manganato](https://manganato.com/)
 
 ## Table of Contents
 
 - [Usage](#Usage)
 - [Install](#Installation)
 - [Dependencies](#Dependencies)
-- [Preview](./preview.mp4)
+- [Preview](https://user-images.githubusercontent.com/81305164/152664895-8c1ad584-eea9-4cb2-8baa-4c27c09eb8a3.mp4)
 - [Disclaimer](./DISCLAIMER.md)
 - [License](./LICENSE.md)
 
@@ -66,6 +66,6 @@ sudo cp manga-cli /usr/local/bin/manga-cli
 - git
 - diff
 - patch
-- convert
+- img2pdf
 - zathura
 - zathura-pdf-mupdf
