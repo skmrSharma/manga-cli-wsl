@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="1.0.1"
+version="1.0.2"
 old_ifs="${IFS}"
 cache_dir="${HOME}/.cache/manga-cli"
 dependencies=("ls" "cat" "curl" "sed" "awk" "tr" "du" "git" "diff" "patch" "img2pdf" "zathura")
