@@ -57,13 +57,11 @@ sudo cp manga-cli /usr/local/bin/manga-cli
 
 ## Dependencies
 
-- cat
+- GNU coreutils (ls, tr, rm, cat, mkdir)
 - curl
 - sed
 - awk
-- tr
 - du
-- ls
 - git
 - diff
 - patch
