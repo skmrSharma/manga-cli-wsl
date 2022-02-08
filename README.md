@@ -63,6 +63,7 @@ sudo cp manga-cli /usr/local/bin/manga-cli
 - awk
 - tr
 - du
+- ls
 - git
 - diff
 - patch
