@@ -1,9 +1,9 @@
 #!/bin/bash
 
-version="1.0.0"
+version="1.0.1"
 old_ifs="${IFS}"
 cache_dir="${HOME}/.cache/manga-cli"
-dependencies=("cat" "curl" "sed" "awk" "tr" "du" "git" "diff" "patch" "convert" "zathura")
+dependencies=("cat" "curl" "sed" "awk" "tr" "du" "git" "diff" "patch" "img2pdf" "zathura")
 github_source="https://raw.githubusercontent.com/7USTIN/manga-cli/master/manga-cli"
 
 # Text colors
@@ -113,7 +113,7 @@ show_cache_size() {
 clear_cache() {
 	show_cache_size
 
-	prompt "Proceed with clearing the cache?" "[Y/N]:"
+	prompt "Proceed with clearing the cache?" "[Y/N]: "
 	user_input="$(printf "%s" "${reply}" | tr "[:upper:]" "[:lower:]")"
 
 	if [[ "${user_input}" == "y" ]]; then
@@ -195,12 +195,11 @@ select_chapter() {
 ####################
 
 scrape_mangas() {
-	base_url="https://mangakakalot.com"
 	search_query="$(printf "%s" "${manga_title_input}" | tr " -" "_")"
 	
 	scraped_results=$(
-		curl --silent "${base_url}/search/story/${search_query}" |
-		sed --silent '/panel_story_list/,$p' |
+		curl --silent "https://manganato.com/search/story/${search_query}" |
+		sed --silent '/panel-search-story/,$p' |
 		sed --silent '/clear: both/q;p'
 	)
 	
@@ -214,7 +213,7 @@ scrape_mangas() {
 
 	result_urls=($(
 		printf "%s" "${scraped_results}" |
-		awk 'BEGIN{RS="\">\n<img"; FS="rel=\"nofollow\" href=\""}NF>1{print $NF}'
+		awk 'BEGIN{RS="\" title="; FS="rel=\"nofollow\" href=\""}NF>1{print $NF}'
 	))
 
 	if [ "${scraped_manga_count}" == "0" ]; then
@@ -239,21 +238,12 @@ scrape_chapter_list() {
 
 	IFS=$'\n'
 
-	if [[ "${manga_url}" =~ mangakakalot ]]; then
-		rev_chapter_urls=($(
-			curl --silent "${manga_url}" |
-			sed --silent '/chapter-list/,$p' |
-			sed --silent '/comment-info/q;p' |
-			awk 'BEGIN{RS="\" title="; FS="href=\""}NF>1{print $NF}'
-		))
-	else
-		rev_chapter_urls=($(
-			curl --silent "${manga_url}" |
-			sed --silent '/row-content-chapter/,$p' |
-			sed --silent '/<\/ul>/q;p' |
-			awk 'BEGIN{RS="\" title="; FS="<a rel=\"nofollow\" class=\"chapter-name text-nowrap\" href=\""}NF>1{print $NF}'
-		))
-	fi
+	rev_chapter_urls=($(
+		curl --silent "${manga_url}" |
+		sed --silent '/row-content-chapter/,$p' |
+		sed --silent '/<\/ul>/q;p' |
+		awk 'BEGIN{RS="\" title="; FS="<a rel=\"nofollow\" class=\"chapter-name text-nowrap\" href=\""}NF>1{print $NF}'
+	))
 
 	chapter_urls=()
 
@@ -290,7 +280,7 @@ scrape_chapter() {
 		chapter_image_links=($(
 			curl --silent "${chapter_url}" |
 			sed --silent '/container-chapter-reader/,$p' |
-			sed --silent '/text-align:center/q;p' |
+			sed --silent '/max-height: 380px/q;p' |
 			awk 'BEGIN{RS="\" alt="; FS="src=\""}NF>1{print $NF}'
 		))
 
@@ -388,9 +378,7 @@ input_controls() {
 update_script() {
 	print_green "Fetching Github repository..."
 
-	changes="$(
-		curl --silent "${github_source}" | diff -u "${0}" -
-	)"
+	changes="$(curl --silent "${github_source}" | diff -u "${0}" -)"
 
 	if [[ -z "${changes}" ]]; then
 		print_green "Script is up to date"
@@ -407,7 +395,22 @@ convert_imgs_to_pdf() {
 	if [[ ! -f "${pdf_dir}" ]]; then
 		print_blue "Converting images to PDF..."
 
-		convert "${image_dir}/*.jpg" "${pdf_dir}"
+		IFS=$'\n'
+
+		sorted_images=($(ls -v "${image_dir}"))
+
+		sorted_image_dirs=()
+
+		for image in "${sorted_images[@]}"; do
+			sorted_image_dirs+=("${image_dir}/${image}")
+		done
+
+		if [[ "${python_cmd_prefix}" == "true" ]]; then
+			python3 -m img2pdf ${sorted_image_dirs[@]} --output "${pdf_dir}"
+		else
+			img2pdf ${sorted_image_dirs[@]} --output "${pdf_dir}"
+		fi
+
 		rm -r "${image_dir:?}/"
 		clear
 	fi
@@ -421,12 +424,14 @@ open_chapter() {
 }
 
 check_dependencies() {
-	exit_script=false
-
 	for dependency in "${dependencies[@]}"; do
 		if ! command -v "${dependency}" &> /dev/null; then
-			print_red "Missing dependency: '${dependency}'"
-			exit_script=true
+			if ! pip3 show "${dependency}" &> /dev/null; then
+				print_red "Missing dependency: '${dependency}'"
+				exit_script=true
+			else
+				python_cmd_prefix=true
+			fi
 		fi
 	done
 
