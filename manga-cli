@@ -369,9 +369,6 @@ input_controls() {
 				((selected_chapter_num=selected_chapter_num + 1))
 				chapter_url="${chapter_urls[${selected_chapter_num} - 1]}"
 				open_chapter
-			else
-				clear
-				input_controls
 			fi
 			;;
 		p)
@@ -379,18 +376,12 @@ input_controls() {
 				((selected_chapter_num=selected_chapter_num - 1))
 				chapter_url="${chapter_urls[${selected_chapter_num} - 1]}"
 				open_chapter
-			else
-				clear
-				input_controls
 			fi
 			;;
 		s)
 			if [[ ${chapter_count} -gt 1 ]]; then
 				select_chapter
 				open_chapter
-			else
-				clear
-				input_controls
 			fi
 			;;
 		r)
