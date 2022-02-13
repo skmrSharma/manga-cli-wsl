@@ -59,6 +59,7 @@ show_help() {
 	  manga-cli [Option] [Manga Name]
 
 	Options:
+	  -f, --fullscreen	Opens manga in Fullscreen
 	  -h, --help		Print this help page
 	  -V, --version		Print version number
 	  -u, --update		Fetch latest version from the Github repository
