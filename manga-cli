@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="1.0.3"
+version="1.0.4"
 old_ifs="${IFS}"
 cache_dir="${HOME}/.cache/manga-cli"
 dependencies=("ls" "cat" "curl" "sed" "awk" "tr" "du" "rm" "mkdir" "git" "diff" "patch" "img2pdf" "zathura")
@@ -12,8 +12,6 @@ green="\033[1;32m"
 blue="\033[1;34m"
 no_color="\033[0m" # Default text color
 
-# opens manga in non fulscreen if nothing else is specified 
-isFullscreen=false
 #########################
 # Text output functions #
 #########################
@@ -56,13 +54,13 @@ show_help() {
 	Bash script for reading mangas via the terminal
 
 	Usage:
-	  manga-cli [Option] [Manga Name]
+	  manga-cli [Options]
 
 	Options:
-	  -f, --fullscreen	Opens manga in Fullscreen
 	  -h, --help		Print this help page
 	  -V, --version		Print version number
 	  -u, --update		Fetch latest version from the Github repository
+	  -f, --fullscreen	Open Zathura in fullscreen mode by default
 	  -l, --last-session	Open last session
 	  -c, --cache-size	Print cache size (${cache_dir})
 	  -C, --clear-cache	Clear cache (${cache_dir})
@@ -78,9 +76,8 @@ unknown_option() {
 	print_red "ERROR: Unknown option '${*}'"
 }
 
-open_pdf() { # Open PDF in Zathura and run it in the background
-	if $isFullscreen 
-	then
+open_pdf() { # Open PDF using Zathura and run it in the background
+	if [[ "${zathura_auto_fullscreen}" == "true" ]]; then
 		zathura --page=1 --mode="fullscreen" "${pdf_dir}" &
 	else
 		zathura --page=1 "${pdf_dir}" &
@@ -143,7 +140,7 @@ cache_session() {
 		"${cache_dir}/session"
 }
 
-open_last_session() {
+read_last_session() {
 	if [[ ! -f "${cache_dir}/session" ]]; then
 		print_red "ERROR: Session file not found"
 	else
@@ -166,8 +163,6 @@ open_last_session() {
 
 		# Update chapter list in the background 
 		scrape_chapter_list &
-		open_chapter
-		input_controls
 	fi
 }
 
@@ -291,9 +286,7 @@ scrape_chapter_list() {
 scrape_chapter() {
 	if [[ -z "${mod_manga_title}" ]]; then
 		manga_title="${result_titles[${selected_manga_num} - 1]}"
-
-		# Replace spaces with underscores
-		mod_manga_title="$(printf "%s" "${manga_title}" | tr " " "_")"
+		mod_manga_title="$(printf "%s" "${manga_title}" | tr " " "_")" # Replace spaces with underscores
 	fi
 
 	image_dir="${cache_dir}/${mod_manga_title}/chapter_${selected_chapter_num}"
@@ -414,7 +407,6 @@ update_script() {
 	if [[ -z "${changes}" ]]; then # If variable 'changes' is empty 
 		print_green "Script is up to date"
 	else
-		# Update script
 		if printf '%s\n' "${changes}" | patch --silent "${0}" -; then
 			print_green "Script successfully updated"
 		else
@@ -481,33 +473,47 @@ main() {
 	input_controls
 }
 
-case "${1}" in
-	-h|--help)
-		show_help
-		;;
-	-f|--fullscreen)
-		isFullscreen=true	
-		main
-		;;
-	-V|--version)
-		show_version
-		;;
-	-u|--update)
-		update_script
-		;;
-	-l|--last-session)
-		open_last_session
-		;;
-	-c|--cache-size)
-		show_cache_size
-		;;
-	-C|--clear-cache)
-		clear_cache
-		;;
-	-?*)	
-		unknown_option "${1}"
-		;;
-	*)
-		manga_title_input="${*}"
-		main
-esac
+while [[ "${1}" ]]; do
+	case "${1}" in
+		-h|--help)
+			show_help
+			exit 0
+			;;
+		-V|--version)
+			show_version
+			exit 0
+			;;
+		-u|--update)
+			update_script
+			exit 0
+			;;
+		-f|--fullscreen)
+			zathura_auto_fullscreen=true
+			;;
+		-l|--last-session)
+			open_last_session=true
+			read_last_session
+			;;
+		-c|--cache-size)
+			show_cache_size
+			exit 0
+			;;
+		-C|--clear-cache)
+			clear_cache
+			exit 0
+			;;
+		-?*)	
+			unknown_option "${1}"
+			exit 1
+			;;
+	esac
+
+	shift
+done
+
+if [[ "${open_last_session}" == "true" ]]; then
+	open_chapter
+	input_controls
+else 
+	main
+fi
