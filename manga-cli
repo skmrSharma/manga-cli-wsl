@@ -12,6 +12,8 @@ green="\033[1;32m"
 blue="\033[1;34m"
 no_color="\033[0m" # Default text color
 
+# opens manga in non fulscreen if nothing else is specified 
+isFullscreen=false
 #########################
 # Text output functions #
 #########################
@@ -76,7 +78,12 @@ unknown_option() {
 }
 
 open_pdf() { # Open PDF in Zathura and run it in the background
-	zathura --page=1 --mode="fullscreen" "${pdf_dir}" &
+	if $isFullscreen 
+	then
+		zathura --page=1 --mode="fullscreen" "${pdf_dir}" &
+	else
+		zathura --page=1 "${pdf_dir}" &
+	fi
 }
 
 check_number_input() {
@@ -476,6 +483,10 @@ main() {
 case "${1}" in
 	-h|--help)
 		show_help
+		;;
+	-f|--fullscreen)
+		isFullscreen=true	
+		main
 		;;
 	-V|--version)
 		show_version
