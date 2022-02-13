@@ -365,18 +365,33 @@ input_controls() {
 
 	case "${user_input}" in
 		n)
-			((selected_chapter_num=selected_chapter_num + 1))
-			chapter_url="${chapter_urls[${selected_chapter_num} - 1]}"
-			open_chapter
+			if [[ ${selected_chapter_num} -lt ${chapter_count} ]]; then
+				((selected_chapter_num=selected_chapter_num + 1))
+				chapter_url="${chapter_urls[${selected_chapter_num} - 1]}"
+				open_chapter
+			else
+				clear
+				input_controls
+			fi
 			;;
 		p)
-			((selected_chapter_num=selected_chapter_num - 1))
-			chapter_url="${chapter_urls[${selected_chapter_num} - 1]}"
-			open_chapter
+			if [[ ${selected_chapter_num} -gt 1 ]]; then	
+				((selected_chapter_num=selected_chapter_num - 1))
+				chapter_url="${chapter_urls[${selected_chapter_num} - 1]}"
+				open_chapter
+			else
+				clear
+				input_controls
+			fi
 			;;
 		s)
-			select_chapter
-			open_chapter
+			if [[ ${chapter_count} -gt 1 ]]; then
+				select_chapter
+				open_chapter
+			else
+				clear
+				input_controls
+			fi
 			;;
 		r)
 			open_pdf
