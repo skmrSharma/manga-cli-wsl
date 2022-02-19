@@ -72,10 +72,6 @@ show_version() {
 	print_green "Version: ${version}"
 }
 
-unknown_option() {
-	print_red "ERROR: Unknown option '${*}'"
-}
-
 open_pdf() { # Open PDF using Zathura and run it in the background
 	if [[ "${zathura_auto_fullscreen}" == "true" ]]; then
 		zathura --page=1 --mode="fullscreen" "${pdf_dir}" &
@@ -344,20 +340,20 @@ input_controls() {
 	print_blue "[Chapter ${selected_chapter_num}/${chapter_count}] ${manga_title}"
 	
 	if [[ ${selected_chapter_num} -lt ${chapter_count} ]]; then
-		print_list_item "N" "Next chapter"
+		print_list_item "n" "Next chapter"
 	fi
 
 	if [[ ${selected_chapter_num} -gt 1 ]]; then	
-		print_list_item "P" "Previous chapter"
+		print_list_item "p" "Previous chapter"
 	fi
 
 	if [[ ${chapter_count} -gt 1 ]]; then
-		print_list_item "S" "Select chapter"
+		print_list_item "s" "Select chapter"
 	fi
 	
-	print_list_item "R" "Reopen current chapter"
-	print_list_item "A" "Search another manga"
-	print_list_item "Q" "Exit"
+	print_list_item "r" "Reopen current chapter"
+	print_list_item "a" "Search another manga"
+	print_list_item "q" "Exit"
 
 	printf "\n"
 	prompt "Enter input:"
@@ -508,8 +504,8 @@ while [[ "${1}" ]]; do
 			clear_cache
 			exit 0
 			;;
-		-?*)	
-			unknown_option "${1}"
+		*)	
+			show_help
 			exit 1
 			;;
 	esac
