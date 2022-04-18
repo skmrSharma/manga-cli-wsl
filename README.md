@@ -2,9 +2,12 @@ https://user-images.githubusercontent.com/81305164/152664895-8c1ad584-eea9-4cb2-
 
 # manga-cli
 
-Bash script for reading mangas via the terminal by scraping [manganato](https://manganato.com/)
+Bash script for reading mangas via the terminal by scraping [manganato](https://manganato.com/).
+
 This is a fork of the original [manga-cli](https://github.com/7USTIN/manga-cli) made to work in WSL(Windows Subsystem for Linux).
+
 Currently, only the zathura dependency has been removed. Instead it uses [wsl-open](https://gitlab.com/4U6U57/wsl-open) to open the images in pdf form.
+
 You can use the original version itself if you can run Zathura on your system.
 
 ## Table of Contents
@@ -54,7 +57,9 @@ paru -S manga-cli-git
 Install dependencies [(See below)](#Dependencies)
 
 ```sh
-git clone https://github.com/skmrSharma/manga-cli-wsl && cd manga-cli-wsl
+git clone https://github.com/skmrSharma/manga-cli-wsl
+cd manga-cli-wsl
+git checkout wsl-integration
 sudo cp manga-cli /usr/local/bin/manga-cli
 ```
 
