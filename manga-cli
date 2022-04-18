@@ -3,7 +3,7 @@
 version="1.0.5"
 old_ifs="${IFS}"
 cache_dir="${HOME}/.cache/manga-cli"
-dependencies=("ls" "cat" "curl" "sed" "awk" "tr" "du" "rm" "mkdir" "git" "diff" "patch" "img2pdf" "zathura")
+dependencies=("ls" "cat" "curl" "sed" "awk" "tr" "du" "rm" "mkdir" "git" "diff" "patch" "img2pdf" "wsl-open")
 github_source="https://raw.githubusercontent.com/7USTIN/manga-cli/master/manga-cli"
 
 # Text colors
@@ -60,7 +60,6 @@ show_help() {
 	  -h, --help		Print this help page
 	  -V, --version		Print version number
 	  -u, --update		Fetch latest version from the Github repository
-	  -f, --fullscreen	Open Zathura in fullscreen mode 
 	  -l, --last-session	Open last session
 	  -c, --cache-size	Print cache size (${cache_dir})
 	  -C, --clear-cache	Clear cache (${cache_dir})
@@ -72,12 +71,8 @@ show_version() {
 	print_green "Version: ${version}"
 }
 
-open_pdf() { # Open PDF using Zathura and run it in the background
-	if [[ "${zathura_auto_fullscreen}" == "true" ]]; then
-		zathura --page=1 --mode="fullscreen" "${pdf_dir}" &
-	else
-		zathura --page=1 "${pdf_dir}" &
-	fi
+open_pdf() {
+	wsl-open "${pdf_dir}" &
 }
 
 check_number_input() {
@@ -488,9 +483,6 @@ while [[ "${1}" ]]; do
 		-u|--update)
 			update_script
 			exit 0
-			;;
-		-f|--fullscreen)
-			zathura_auto_fullscreen=true
 			;;
 		-l|--last-session)
 			open_last_session=true
