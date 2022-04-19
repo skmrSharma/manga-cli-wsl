@@ -59,7 +59,6 @@ Install dependencies [(See below)](#Dependencies)
 ```sh
 git clone https://github.com/skmrSharma/manga-cli-wsl
 cd manga-cli-wsl
-git checkout wsl-integration
 sudo cp manga-cli /usr/local/bin/manga-cli
 ```
 
